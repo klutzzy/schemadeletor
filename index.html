@@ -1,0 +1,109 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Schema Ändrare</title>
+</head>
+<body>
+  <h1>Schema Ändrare</h1>
+  
+  <p>Ta bort fetch(" från början och ); på slutet</p>
+  <p>Sätt in din workshopBookings API här:</p>
+  <textarea id="apiTextArea"></textarea>
+  <button onclick="submitAPI()">Submit</button>
+  <h1>List of Items</h1>
+  <ul id="itemList">
+    
+  </ul>
+  <p id="demo"></p>
+
+  <script>
+    function submitAPI() {
+      count=0
+      const apiData = document.getElementById("apiTextArea").value;
+
+      console.log("Submitting API request...");
+
+      fetch('/submit-api', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ apiData })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Received data from the server:", data);
+
+         dates = data.dates;
+         ws = data.ids;
+        bearer=data.bearer;
+        console.log("BEARER", bearer)
+
+        // index.js
+
+        
+
+        
+        
+         
+        const itemList = document.getElementById("itemList");
+        itemList.innerHTML = ""; // Clear the list first
+
+       
+        
+
+        dates.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = `${count}: ${item} [REMOVE]`; 
+          itemList.appendChild(li);
+          var id=ws[`${count}`]
+         
+
+          
+          function handleItemClick(itemCount) {
+            li.addEventListener("click", function() {
+              alert("You clicked item " + ws[itemCount]);
+              erik=ws[itemCount].split(",")
+              
+              const hello = {
+          url: "https://app-kedbackend-prod-swe-02.azurewebsites.net/api/batch?clientIdentity=6b14119f-3bf2-4d23-8c49-c4be156f0e13&flags=modtrack",
+            method: "POST",
+            headers: {
+              accept: "application/json",
+              "accept-language": "en,sv;q=0.9,ko;q=0.8",
+              authorization: bearer,
+              "content-type": "application/json",
+              "sec-ch-ua": "\".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\"",
+              "sec-ch-ua-mobile": "?0",
+              "sec-ch-ua-platform": "\"Chrome OS\"",
+              "sec-fetch-dest": "empty",
+              "sec-fetch-mode": "cors",
+              "sec-fetch-site": "cross-site",
+              Referer: "https://ks.kunskapsporten.se/",
+              "Referrer-Policy": "strict-origin-when-cross-origin"
+            },
+                body: JSON.stringify([
+                  { "op": "unlink", "sourceTable": "calendarEvents", "sourceId": erik[0], "targetId": erik[1], "label": "workshopBookings" },
+                  { "op": "delete", "table": "workshopBookings", "id": erik[1] }
+                ])
+              }
+
+            
+          
+            fetch(hello.url, hello)
+            });
+          }
+
+          handleItemClick(count); 
+          count++; 
+        });
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    }
+  </script>
+</body>
+</html>
